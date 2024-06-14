@@ -1,0 +1,57 @@
+docker run -it ^
+    -e POSTGRES_USER="root" ^
+    -e POSTGRES_PASSWORD="root" ^
+    -e POSTGRES_DB="ny_taxi" ^
+    -v "D:/Data Science/data_eng_zoomcamp/Week 1/ny_taxi_postgres_data:/var/lib/postgresql/data" ^
+    -p 5432:5432 ^
+postgres:13
+
+pgcli -h localhost -p 5432 -u root -d ny_taxi
+
+# docker pull dpage/pgadmin4
+
+docker run -it ^
+    -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" ^
+    -e PGADMIN_DEFAULT_PASSWORD="root" ^
+    -p 8080:80 ^
+dpage/pgadmin4
+
+docker network create pg-network
+
+docker run -it ^
+    -e POSTGRES_USER="root" ^
+    -e POSTGRES_PASSWORD="root" ^
+    -e POSTGRES_DB="ny_taxi" ^
+    -v "D:/Data Science/data_eng_zoomcamp/Week 1/ny_taxi_postgres_data:/var/lib/postgresql/data" ^
+    -p 5432:5432 ^
+    --network=pg-network ^
+    --name pg-database ^
+postgres:13
+
+docker run -it ^
+    -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" ^
+    -e PGADMIN_DEFAULT_PASSWORD="root" ^
+    -p 8080:80 ^
+    --network=pg-network ^
+    --name pgadmin-2 ^
+dpage/pgadmin4
+
+python ingest_data.py ^
+    --user=root ^
+    --password=root ^
+    --host=localhost ^
+    --port=5432 ^
+    --db=ny_taxi ^
+    --table_name=yellow_taxi_data ^
+    --url="https://my-gv-test-bucket.s3.eu-west-2.amazonaws.com/data_eng_zoomcamp_datasets/yellow_tripdata_2021-01.csv"
+
+docker build -t taxi_ingest:v001 .
+
+docker run -it taxi_ingest:v001 ^
+    --user=root ^
+    --password=root ^
+    --host=host.docker.internal ^
+    --port=5432 ^
+    --db=ny_taxi ^
+    --table_name=yellow_taxi_data ^
+    --url="https://my-gv-test-bucket.s3.eu-west-2.amazonaws.com/data_eng_zoomcamp_datasets/yellow_tripdata_2021-01.csv"
