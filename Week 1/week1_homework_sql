@@ -1,0 +1,33 @@
+SELECT COUNT(*)
+FROM yellow_taxi_data
+WHERE DATE(tpep_pickup_datetime)='2021-01-18' AND DATE(tpep_dropoff_datetime)='2021-01-18';
+
+SELECT DATE(tpep_pickup_datetime), MAX(trip_distance) as max_dist
+FROM yellow_taxi_data
+GROUP BY DATE(tpep_pickup_datetime)
+ORDER BY max_dist DESC
+LIMIT 10;
+
+SELECT z."Borough", SUM(y.total_amount) as sum_total
+FROM yellow_taxi_data y
+JOIN zone_lookup z ON y."PULocationID" = z.index
+WHERE DATE(tpep_pickup_datetime) = '2021-01-18' AND z."Borough" <> 'Unknown'
+GROUP BY z."Borough"
+HAVING SUM(y.total_amount) > 50000
+ORDER BY sum_total DESC
+LIMIT 10;
+
+SELECT z2."Zone", MAX(tip_amount) as max_tip
+FROM yellow_taxi_data y
+JOIN zone_lookup z ON y."PULocationID" = z.index
+JOIN zone_lookup z2 ON y."DOLocationID" = z2.index
+WHERE z."Zone" = 'Van Cortlandt Park'
+GROUP BY z2."Zone"
+ORDER BY max_tip DESC;
+
+-- select * from zone_lookup;
+
+-- SELECT "PULocationID", COUNT(*) FROM yellow_taxi_data
+-- GROUP BY "PULocationID"
+-- ORDER BY COUNT(*) DESC
+-- LIMIT 10;

@@ -37,9 +37,16 @@ def main(params):
     df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
     df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
 
+
+    lookup_url = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+    lookup_csv = "zone_lookup.csv"
+    lookup_table_name = "zone_lookup"
+    
+    os.system(f"wget {lookup_url} -O {lookup_csv}")
+    zone_lookup_df = pd.read_csv(lookup_csv)
+    zone_lookup_df.to_sql(name=lookup_table_name, con=engine, if_exists='replace')
+
     # df.head(0) # For only header
-
-
     df.head(0).to_sql(name=table_name, con=engine, if_exists='replace')
     df.to_sql(name=table_name, con=engine, if_exists='append')
 

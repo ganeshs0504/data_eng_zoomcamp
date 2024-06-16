@@ -55,3 +55,38 @@ docker run -it taxi_ingest:v001 ^
     --db=ny_taxi ^
     --table_name=yellow_taxi_data ^
     --url="https://my-gv-test-bucket.s3.eu-west-2.amazonaws.com/data_eng_zoomcamp_datasets/yellow_tripdata_2021-01.csv"
+
+docker run -it taxi_ingest:v002 ^
+    --user=root ^
+    --password=root ^
+    --host=host.docker.internal ^
+    --port=5432 ^
+    --db=ny_taxi ^
+    --table_name=yellow_taxi_data ^
+    --url="https://my-gv-test-bucket.s3.eu-west-2.amazonaws.com/data_eng_zoomcamp_datasets/yellow_tripdata_2021-01.csv"
+
+
+
+GCP AND TERRAFORM COMMANDS
+
+ssh-keygen sometihng somethin
+ssh -i <location of private key> ganesh@<external IP of instance>
+
+wget <anaconda file link>
+bash anaconda.....sh
+source .bashrc
+
+sudo apt-get update
+sudo apt-get install docker.io
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+sudo service docker restart
+
+mkdir bin
+cd bin
+wget <docker compose x86_64 link>
+chmod +x docker-compose
+
+inside terraform in gcp ssh terminal (To authenticate/ activate service account)
+export GOOGLE_APPLICATION_CREDENTIALS=~/.gc/my_creds.json
+gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
